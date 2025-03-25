@@ -1,6 +1,9 @@
 spring:
   application:
     name: shift-control-enterprise
+  config:
+    import:
+      - optional:file:${user.dir}/.env.properties
   datasource:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USERNAME}
