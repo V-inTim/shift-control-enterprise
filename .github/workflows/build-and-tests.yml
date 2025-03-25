@@ -36,7 +36,7 @@ jobs:
 
       - name: Build with Maven
         env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5433/test_db
+          POSTGRES_URL: jdbc:postgresql://localhost:5432/test_db
           POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: postgres
         run: mvn -B package --file pom.xml
