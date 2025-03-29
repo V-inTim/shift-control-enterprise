@@ -2,7 +2,6 @@ package com.example.shift_control_enterprise.service;
 
 import com.example.shift_control_enterprise.dto.EnterpriseDto;
 import com.example.shift_control_enterprise.entity.Enterprise;
-import com.example.shift_control_enterprise.exception.UserException;
 import com.example.shift_control_enterprise.mapper.EnterpriseMapper;
 import com.example.shift_control_enterprise.repository.EnterpriseRepository;
 import jakarta.transaction.Transactional;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,8 +24,6 @@ public class EnterpriseService {
     }
 
     public Enterprise create(EnterpriseDto dto){
-        if (dto.getName().isEmpty())
-            throw new UserException("Не передано обязательное поле name.");
         return enterpriseRepository.save(enterpriseMapper.dtoToEnterprise(dto));
     }
 
@@ -42,13 +38,11 @@ public class EnterpriseService {
 
     @Transactional
     public Enterprise update(UUID id, EnterpriseDto dto){
-        return enterpriseRepository.findById(id)
-                .map(enterprise -> {
-                    Optional.ofNullable(dto.getName()).ifPresent(enterprise::setName);
-                    Optional.ofNullable(dto.getDescription()).ifPresent(enterprise::setDescription);
-                    return enterpriseRepository.save(enterprise);
-                })
-                .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
+        if (!enterpriseRepository.existsById(id))
+            throw new NoSuchElementException("Такого enterprise нет.");
+        Enterprise enterprise = enterpriseMapper.dtoToEnterprise(dto);
+        enterprise.setId(id);
+        return enterpriseRepository.save(enterprise);
     }
 
     public void delete(UUID id){

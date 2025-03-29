@@ -3,6 +3,7 @@ package com.example.shift_control_enterprise.controller;
 import com.example.shift_control_enterprise.dto.EnterpriseDto;
 import com.example.shift_control_enterprise.entity.Enterprise;
 import com.example.shift_control_enterprise.service.EnterpriseService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class EnterpriseController {
     }
 
     @PostMapping
-    public ResponseEntity<Enterprise> create(@RequestBody EnterpriseDto dto){
+    public ResponseEntity<Enterprise> create(@RequestBody @Valid EnterpriseDto dto){
         logger.info("Поступил запрос на создание Enterprise");
 
         Enterprise enterprise = enterpriseService.create(dto);
@@ -56,7 +57,7 @@ public class EnterpriseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Enterprise> update(@PathVariable UUID id, @RequestBody EnterpriseDto dto){
+    public ResponseEntity<Enterprise> update(@PathVariable UUID id, @RequestBody @Valid EnterpriseDto dto){
         logger.info("Поступил запрос на изменение Enterprise");
 
         Enterprise enterprise = enterpriseService.update(id, dto);
