@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +15,4 @@ public class EmployeeDto {
     private String lastName;
     private String secondName;
     private LocalDate dateOfBirth;
-    @NotNull
-    private UUID enterpriseId;
 }

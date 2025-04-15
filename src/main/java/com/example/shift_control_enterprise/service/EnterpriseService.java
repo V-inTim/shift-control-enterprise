@@ -4,8 +4,10 @@ import com.example.shift_control_enterprise.dto.EnterpriseDto;
 import com.example.shift_control_enterprise.entity.Enterprise;
 import com.example.shift_control_enterprise.mapper.EnterpriseMapper;
 import com.example.shift_control_enterprise.repository.EnterpriseRepository;
+import com.example.shift_control_enterprise.security.AuthUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,17 +18,24 @@ import java.util.UUID;
 public class EnterpriseService {
     private final EnterpriseRepository enterpriseRepository;
     private final EnterpriseMapper enterpriseMapper;
+    private final AuthUtils authUtils;
 
     @Autowired
-    public EnterpriseService(EnterpriseRepository enterpriseRepository, EnterpriseMapper enterpriseMapper) {
+    public EnterpriseService(EnterpriseRepository enterpriseRepository, EnterpriseMapper enterpriseMapper,
+                             AuthUtils authUtils) {
         this.enterpriseRepository = enterpriseRepository;
         this.enterpriseMapper = enterpriseMapper;
+        this.authUtils = authUtils;
     }
+
 
     public Enterprise create(EnterpriseDto dto){
-        return enterpriseRepository.save(enterpriseMapper.dtoToEnterprise(dto));
+        Enterprise enterprise = enterpriseMapper.dtoToEnterprise(dto);
+        enterprise.setOwnerId(authUtils.getCurrentUserId());
+        return enterpriseRepository.save(enterprise);
     }
 
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
     public Enterprise getById(UUID id){
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
@@ -36,6 +45,7 @@ public class EnterpriseService {
         return enterpriseRepository.findAll();
     }
 
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
     @Transactional
     public Enterprise update(UUID id, EnterpriseDto dto){
         if (!enterpriseRepository.existsById(id))
@@ -45,6 +55,7 @@ public class EnterpriseService {
         return enterpriseRepository.save(enterprise);
     }
 
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
     public void delete(UUID id){
         enterpriseRepository.deleteById(id);
     }

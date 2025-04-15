@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/enterprise/enterprises")
+@RequestMapping("/enterprises")
 public class EnterpriseController {
     private final EnterpriseService enterpriseService;
 

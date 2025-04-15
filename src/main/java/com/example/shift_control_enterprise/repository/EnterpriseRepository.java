@@ -7,4 +7,6 @@ import java.util.UUID;
 
 
 public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID> {
+    boolean existsByIdAndOwnerId(UUID id, UUID ownerId);
+
 }

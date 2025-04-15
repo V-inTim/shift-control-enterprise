@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/enterprise/employees")
+@RequestMapping("/enterprises/{enterpriseId}/employees")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
@@ -27,50 +27,51 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> create(@RequestBody @Valid EmployeeDto dto){
+    public ResponseEntity<Employee> create(@PathVariable UUID enterpriseId, @RequestBody @Valid EmployeeDto dto){
         logger.info("Поступил запрос на создание Employee");
 
-        Employee employee = employeeService.create(dto);
+        Employee employee = employeeService.create(dto, enterpriseId);
 
         logger.info("Обработан запрос на создание Employee");
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Employee> getById(@PathVariable UUID id){
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<Employee> getById(@PathVariable UUID employeeId, @PathVariable UUID enterpriseId){
         logger.info("Поступил запрос на получение Employee");
 
-        Employee employee = employeeService.getById(id);
+        Employee employee = employeeService.getById(employeeId, enterpriseId);
 
         logger.info("Обработан запрос на получение Employee");
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAll(){
+    public ResponseEntity<List<Employee>> getAll(@PathVariable UUID enterpriseId){
         logger.info("Поступил запрос на получение всех Employee");
 
-        List<Employee> employees = employeeService.getAll();
+        List<Employee> employees = employeeService.getAll(enterpriseId);
 
         logger.info("Обработан запрос на получение всех Employee");
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Employee> update(@PathVariable UUID id, @RequestBody @Valid EmployeeDto dto){
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<Employee> update(@PathVariable UUID employeeId, @PathVariable UUID enterpriseId,
+                                           @RequestBody @Valid EmployeeDto dto){
         logger.info("Поступил запрос на изменение Employee");
 
-        Employee employee = employeeService.update(id, dto);
+        Employee employee = employeeService.update(employeeId, enterpriseId, dto);
 
         logger.info("Обработан запрос на изменение Employee");
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID employeeId, @PathVariable UUID enterpriseId){
         logger.info("Поступил запрос на удаление Employee");
 
-        employeeService.delete(id);
+        employeeService.delete(employeeId, enterpriseId);
 
         logger.info("Обработан запрос на удаление Employee");
         return new ResponseEntity<>(HttpStatus.OK);

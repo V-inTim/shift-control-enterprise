@@ -8,6 +8,7 @@ import com.example.shift_control_enterprise.repository.EmployeeRepository;
 import com.example.shift_control_enterprise.repository.EnterpriseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,34 +29,39 @@ public class EmployeeService {
         this.employeeMapper = employeeMapper;
     }
 
-    public Employee create(EmployeeDto dto){
-        Enterprise enterprise = enterpriseRepository.findById(dto.getEnterpriseId())
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId, authentication)")
+    public Employee create(EmployeeDto dto, UUID enterpriseId){
+        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
         Employee employee = employeeMapper.dtoToEmployee(dto);
         employee.setEnterprise(enterprise);
         return employeeRepository.save(employee);
     }
 
-    public Employee getById(UUID id){
-        return employeeRepository.findById(id)
+    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
+    public Employee getById(UUID employeeId, UUID enterpriseId){
+        return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
     }
 
-    public List<Employee> getAll(){
-        return employeeRepository.findAll();
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId, authentication)")
+    public List<Employee> getAll(UUID enterpriseId){
+        return employeeRepository.findAllByEnterpriseId(enterpriseId);
     }
 
+    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
     @Transactional
-    public Employee update(UUID id, EmployeeDto dto){
-        Enterprise enterprise = enterpriseRepository.findById(dto.getEnterpriseId())
+    public Employee update(UUID employeeId, UUID enterpriseId, EmployeeDto dto){
+        Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
         Employee employee = employeeMapper.dtoToEmployee(dto);
         employee.setEnterprise(enterprise);
-        employee.setId(id);
+        employee.setId(employeeId);
         return employeeRepository.save(employee);
     }
 
-    public void delete(UUID id){
-        employeeRepository.deleteById(id);
+    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
+    public void delete(UUID employeeId, UUID enterpriseId){
+        employeeRepository.deleteById(employeeId);
     }
 }
