@@ -23,3 +23,8 @@ databaseChangeLog:
                   type: text
                   constraints:
                     nullable: true
+              - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false
