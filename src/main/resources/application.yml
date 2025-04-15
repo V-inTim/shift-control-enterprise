@@ -16,4 +16,8 @@ spring:
     show-sql: true
   liquibase:
     enabled: true
+  security:
+    oauth2.resourceserver.jwt:
+      issuer-uri: http://localhost:8085
+      jwk-set-uri: http://localhost:8085/oauth2/jwks
 
