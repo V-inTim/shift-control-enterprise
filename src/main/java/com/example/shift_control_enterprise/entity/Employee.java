@@ -3,6 +3,7 @@ package com.example.shift_control_enterprise.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.UUID;
 @Entity(name = "employees")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
