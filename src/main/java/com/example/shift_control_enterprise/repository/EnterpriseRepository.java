@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 
-public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID> {
-    boolean existsByIdAndOwnerId(UUID id, UUID ownerId);
+public interface EnterpriseRepository extends JpaRepository<Enterprise, Long> {
+    boolean existsByIdAndOwnerId(Long id, UUID ownerId);
 
 }

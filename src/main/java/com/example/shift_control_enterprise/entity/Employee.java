@@ -1,5 +1,6 @@
 package com.example.shift_control_enterprise.entity;
 
+import com.example.shift_control_enterprise.type.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +15,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -24,6 +25,9 @@ public class Employee {
     private String secondName;
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;

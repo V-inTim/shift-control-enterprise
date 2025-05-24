@@ -36,7 +36,7 @@ public class EnterpriseService {
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
-    public Enterprise getById(UUID id){
+    public Enterprise getById(Long id){
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
     }
@@ -47,16 +47,17 @@ public class EnterpriseService {
 
     @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
     @Transactional
-    public Enterprise update(UUID id, EnterpriseDto dto){
+    public Enterprise update(Long id, EnterpriseDto dto){
         if (!enterpriseRepository.existsById(id))
             throw new NoSuchElementException("Такого enterprise нет.");
         Enterprise enterprise = enterpriseMapper.dtoToEnterprise(dto);
+        enterprise.setOwnerId(authUtils.getCurrentUserId());
         enterprise.setId(id);
         return enterpriseRepository.save(enterprise);
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
-    public void delete(UUID id){
+    public void delete(Long id){
         enterpriseRepository.deleteById(id);
     }
 

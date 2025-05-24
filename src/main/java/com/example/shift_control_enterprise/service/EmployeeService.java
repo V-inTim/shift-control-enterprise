@@ -30,28 +30,29 @@ public class EmployeeService {
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId, authentication)")
-    public Employee create(EmployeeDto dto, UUID enterpriseId){
+    public Employee create(EmployeeDto dto, Long enterpriseId){
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
         Employee employee = employeeMapper.dtoToEmployee(dto);
+        System.out.println(employee.getGender());
         employee.setEnterprise(enterprise);
         return employeeRepository.save(employee);
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
-    public Employee getById(UUID employeeId, UUID enterpriseId){
+    public Employee getById(Long employeeId, Long enterpriseId){
         return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId, authentication)")
-    public List<Employee> getAll(UUID enterpriseId){
+    public List<Employee> getAll(Long enterpriseId){
         return employeeRepository.findAllByEnterpriseId(enterpriseId);
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
     @Transactional
-    public Employee update(UUID employeeId, UUID enterpriseId, EmployeeDto dto){
+    public Employee update(Long employeeId, Long enterpriseId, EmployeeDto dto){
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
         Employee employee = employeeMapper.dtoToEmployee(dto);
@@ -61,7 +62,7 @@ public class EmployeeService {
     }
 
     @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
-    public void delete(UUID employeeId, UUID enterpriseId){
+    public void delete(Long employeeId, Long enterpriseId){
         employeeRepository.deleteById(employeeId);
     }
 }

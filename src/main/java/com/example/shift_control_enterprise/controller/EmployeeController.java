@@ -27,7 +27,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> create(@PathVariable UUID enterpriseId, @RequestBody @Valid EmployeeDto dto){
+    public ResponseEntity<Employee> create(@PathVariable Long enterpriseId, @RequestBody @Valid EmployeeDto dto){
         logger.info("Поступил запрос на создание Employee");
 
         Employee employee = employeeService.create(dto, enterpriseId);
@@ -37,7 +37,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{employeeId}")
-    public ResponseEntity<Employee> getById(@PathVariable UUID employeeId, @PathVariable UUID enterpriseId){
+    public ResponseEntity<Employee> getById(@PathVariable Long employeeId, @PathVariable Long enterpriseId){
         logger.info("Поступил запрос на получение Employee");
 
         Employee employee = employeeService.getById(employeeId, enterpriseId);
@@ -47,7 +47,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAll(@PathVariable UUID enterpriseId){
+    public ResponseEntity<List<Employee>> getAll(@PathVariable Long enterpriseId){
         logger.info("Поступил запрос на получение всех Employee");
 
         List<Employee> employees = employeeService.getAll(enterpriseId);
@@ -57,7 +57,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{employeeId}")
-    public ResponseEntity<Employee> update(@PathVariable UUID employeeId, @PathVariable UUID enterpriseId,
+    public ResponseEntity<Employee> update(@PathVariable Long employeeId, @PathVariable Long enterpriseId,
                                            @RequestBody @Valid EmployeeDto dto){
         logger.info("Поступил запрос на изменение Employee");
 
@@ -68,7 +68,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{employeeId}")
-    public ResponseEntity<Void> delete(@PathVariable UUID employeeId, @PathVariable UUID enterpriseId){
+    public ResponseEntity<Void> delete(@PathVariable Long employeeId, @PathVariable Long enterpriseId){
         logger.info("Поступил запрос на удаление Employee");
 
         employeeService.delete(employeeId, enterpriseId);
