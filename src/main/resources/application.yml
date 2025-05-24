@@ -1,3 +1,5 @@
+server:
+  port: 8082
 spring:
   application:
     name: shift-control-enterprise
@@ -18,6 +20,7 @@ spring:
     enabled: true
   security:
     oauth2.resourceserver.jwt:
-      issuer-uri: http://localhost:8085
-      jwk-set-uri: http://localhost:8085/oauth2/jwks
+      issuer-uri: ${AUTH_URL}
+      jwk-set-uri: ${AUTH_URL}/oauth2/jwks
+auth.url: ${AUTH_URL}
 
