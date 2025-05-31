@@ -2,7 +2,6 @@ package com.example.shift_control_enterprise.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,8 +14,9 @@ public class ResourceServerConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(HttpMethod.GET, "/enterprises/**").hasAuthority("SCOPE_read")
-                        .requestMatchers(HttpMethod.POST, "/enterprises/**").hasAuthority("SCOPE_write")
+                        .requestMatchers("/enterprises/time-point").hasAuthority("SCOPE_external.write")
+                        .requestMatchers("/api/**").hasAuthority("SCOPE_external.read")
+                        .requestMatchers("/enterprises/**").hasAuthority("SCOPE_enterprise")
                         .anyRequest()
                         .authenticated()
                 )
