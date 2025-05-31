@@ -1,9 +1,11 @@
 package com.example.shift_control_enterprise.handler;
 
+import com.example.shift_control_enterprise.exception.EnterpriseException;
 import com.example.shift_control_enterprise.exception.UserException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -48,5 +50,17 @@ public class EnterpriseHandler {
     public ResponseEntity<Map<String, Object>> handleNoSuchElementException(NoSuchElementException ex){
         logger.warn("исключение NoSuchElementException: {}", ex.getMessage());
         return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        logger.warn("исключение DataIntegrityViolationException: {}", ex.getMessage());
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EnterpriseException.class)
+    public ResponseEntity<Map<String, Object>> handleEnterpriseException(EnterpriseException ex) {
+        logger.warn("исключение EnterpriseException: {}", ex.getMessage());
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }
