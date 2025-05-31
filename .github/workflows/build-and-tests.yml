@@ -39,4 +39,5 @@ jobs:
           POSTGRES_URL: jdbc:postgresql://localhost:5432/test_db
           POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: postgres
+          AUTH_URL: http://your-auth-server.com
         run: mvn -B package --file pom.xml
