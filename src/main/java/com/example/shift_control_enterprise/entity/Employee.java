@@ -1,13 +1,13 @@
 package com.example.shift_control_enterprise.entity;
 
 import com.example.shift_control_enterprise.type.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity(name = "employees")
 @Data
@@ -28,6 +28,8 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;
