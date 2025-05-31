@@ -1,3 +1,5 @@
+server:
+  port: 8082
 spring:
   application:
     name: shift-control-enterprise
@@ -16,4 +18,9 @@ spring:
     show-sql: true
   liquibase:
     enabled: true
+  security:
+    oauth2.resourceserver.jwt:
+      issuer-uri: ${AUTH_URL}
+      jwk-set-uri: ${AUTH_URL}/oauth2/jwks
+auth.url: ${AUTH_URL}
 

@@ -8,8 +8,8 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: uuid
-                  defaultValueComputed: gen_random_uuid()
+                  type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -23,3 +23,8 @@ databaseChangeLog:
                   type: text
                   constraints:
                     nullable: true
+              - column:
+                  name: owner_id
+                  type: uuid
+                  constraints:
+                    nullable: false

@@ -1,19 +1,22 @@
 package com.example.shift_control_enterprise.entity;
 
+import com.example.shift_control_enterprise.type.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity(name = "employees")
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -22,6 +25,11 @@ public class Employee {
     private String secondName;
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "enterprise_id")
     private Enterprise enterprise;

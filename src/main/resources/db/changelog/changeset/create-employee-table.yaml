@@ -8,8 +8,8 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: uuid
-                  defaultValueComputed: gen_random_uuid()
+                  type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -34,8 +34,13 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
+                  name: gender
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
                   name: enterprise_id
-                  type: uuid
+                  type: BIGINT
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/enterprise/enterprises")
+@RequestMapping("/enterprises")
 public class EnterpriseController {
     private final EnterpriseService enterpriseService;
 
@@ -37,7 +37,7 @@ public class EnterpriseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Enterprise> getById(@PathVariable UUID id){
+    public ResponseEntity<Enterprise> getById(@PathVariable Long id){
         logger.info("Поступил запрос на получение Enterprise");
 
         Enterprise enterprise = enterpriseService.getById(id);
@@ -57,7 +57,7 @@ public class EnterpriseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Enterprise> update(@PathVariable UUID id, @RequestBody @Valid EnterpriseDto dto){
+    public ResponseEntity<Enterprise> update(@PathVariable Long id, @RequestBody @Valid EnterpriseDto dto){
         logger.info("Поступил запрос на изменение Enterprise");
 
         Enterprise enterprise = enterpriseService.update(id, dto);
@@ -67,7 +67,7 @@ public class EnterpriseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id){
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         logger.info("Поступил запрос на удаление Enterprise");
 
         enterpriseService.delete(id);
