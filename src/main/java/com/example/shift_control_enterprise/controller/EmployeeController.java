@@ -7,12 +7,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/enterprises/{enterpriseId}/employees")
@@ -47,10 +45,12 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Employee>> getAll(@PathVariable Long enterpriseId){
+    public ResponseEntity<Page<Employee>> getAll(@PathVariable Long enterpriseId,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "50") int size){
         logger.info("Поступил запрос на получение всех Employee");
 
-        List<Employee> employees = employeeService.getAll(enterpriseId);
+        Page<Employee> employees = employeeService.getAll(enterpriseId, page, size);
 
         logger.info("Обработан запрос на получение всех Employee");
         return new ResponseEntity<>(employees, HttpStatus.OK);
