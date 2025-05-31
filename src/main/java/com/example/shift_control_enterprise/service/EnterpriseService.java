@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class EnterpriseService {
@@ -35,7 +34,7 @@ public class EnterpriseService {
         return enterpriseRepository.save(enterprise);
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id)")
     public Enterprise getById(Long id){
         return enterpriseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
@@ -45,7 +44,7 @@ public class EnterpriseService {
         return enterpriseRepository.findAll();
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id)")
     @Transactional
     public Enterprise update(Long id, EnterpriseDto dto){
         if (!enterpriseRepository.existsById(id))
@@ -56,7 +55,7 @@ public class EnterpriseService {
         return enterpriseRepository.save(enterprise);
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id, authentication)")
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#id)")
     public void delete(Long id){
         enterpriseRepository.deleteById(id);
     }

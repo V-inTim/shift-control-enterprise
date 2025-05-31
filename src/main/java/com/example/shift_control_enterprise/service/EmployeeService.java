@@ -8,12 +8,12 @@ import com.example.shift_control_enterprise.repository.EmployeeRepository;
 import com.example.shift_control_enterprise.repository.EnterpriseRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class EmployeeService {
@@ -29,7 +29,7 @@ public class EmployeeService {
         this.employeeMapper = employeeMapper;
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId, authentication)")
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId)")
     public Employee create(EmployeeDto dto, Long enterpriseId){
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
@@ -39,18 +39,19 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
+    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId)")
     public Employee getById(Long employeeId, Long enterpriseId){
         return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new NoSuchElementException("Такого enterprise нет."));
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId, authentication)")
-    public List<Employee> getAll(Long enterpriseId){
-        return employeeRepository.findAllByEnterpriseId(enterpriseId);
+    @PreAuthorize("@enterprisePermission.hasAccessToEnterprise(#enterpriseId)")
+    public Page<Employee> getAll(Long enterpriseId, int page, int size){
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return employeeRepository.findAllByEnterpriseId(enterpriseId, pageRequest);
     }
 
-    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId, authentication)")
+    @PreAuthorize("@enterprisePermission.hasAccessToEmployee(#enterpriseId, #employeeId)")
     @Transactional
     public Employee update(Long employeeId, Long enterpriseId, EmployeeDto dto){
         Enterprise enterprise = enterpriseRepository.findById(enterpriseId)
