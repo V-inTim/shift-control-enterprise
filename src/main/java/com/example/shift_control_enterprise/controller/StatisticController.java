@@ -2,11 +2,14 @@ package com.example.shift_control_enterprise.controller;
 
 import com.example.shift_control_enterprise.dto.WorkShiftsPerPeriodDto;
 import com.example.shift_control_enterprise.dto.WorkShiftsSumPerPeriodDto;
+import com.example.shift_control_enterprise.dto.WorkTimePerWeekDto;
 import com.example.shift_control_enterprise.service.StatisticService;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,5 +68,15 @@ public class StatisticController {
 
         logger.info("Обработан запрос /work-shifts-per-period-with-limit");
         return new ResponseEntity<>(workShifts, HttpStatus.OK);
+    }
+    @GetMapping("/work-shifts-forecast")
+    public ResponseEntity<List<WorkTimePerWeekDto>> getForecast(@PathVariable @NotNull Long enterpriseId,
+                                                   @RequestParam @DefaultValue(value = "50") @Max(value = 200) int limit){
+        logger.info("Поступил запрос /enterprises/{enterpriseId}/work-shifts-forecast");
+
+        List<WorkTimePerWeekDto> response = statisticService.getForecast(enterpriseId, limit);
+
+        logger.info("Обработан запрос /enterprises/{enterpriseId}/work-shifts-forecast");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

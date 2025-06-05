@@ -40,4 +40,5 @@ jobs:
           POSTGRES_USERNAME: postgres
           POSTGRES_PASSWORD: postgres
           AUTH_URL: http://your-auth-server.com
+          FORECAST_URL: forecast.com
         run: mvn -B package --file pom.xml
