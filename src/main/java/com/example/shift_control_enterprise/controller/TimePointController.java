@@ -1,5 +1,6 @@
 package com.example.shift_control_enterprise.controller;
 
+import com.example.shift_control_enterprise.dto.TimePointDto;
 import com.example.shift_control_enterprise.service.TimePointService;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -25,10 +26,10 @@ public class TimePointController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @NotNull Long employeeId){
+    public ResponseEntity<Void> create(@RequestBody @NotNull TimePointDto dto){
         logger.info("Получен запрос на создание временной метки.");
 
-        timePointService.makeTimePoint(employeeId);
+        timePointService.makeTimePoint(dto.getEmployeeId());
 
         logger.info("Отправлен ответ на создание временной метки.");
         return new ResponseEntity<>(HttpStatus.CREATED);
