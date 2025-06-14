@@ -1,0 +1,334 @@
+@startuml
+class com.example.shift_control_enterprise.config.ResourceServerConfig {
++ SecurityFilterChain filterChain(HttpSecurity)
+}
+
+class com.example.shift_control_enterprise.service.TimePointService {
+- WorkShiftRepository workShiftRepository
+- EmployeeRepository employeeRepository
++ void makeTimePoint(Long)
+}
+
+
+class com.example.shift_control_enterprise.service.HourOperationService {
+- WorkShiftRepository workShiftRepository
+- WorkShiftMapper workShiftMapper
++ Map<Long,List<WorkShiftHoursDto>> getHoursMap(List<Long>,LocalDate,LocalDate)
++ BigDecimal sumHours(List<WorkShiftHoursDto>)
+- BigDecimal calculateHoursBetween(LocalTime,LocalTime)
+}
+
+
+class com.example.shift_control_enterprise.service.StatisticService {
+- EmployeeRepository employeeRepository
+- EmployeeMapper employeeMapper
+- HourOperationService hourOperationService
+- WorkShiftRepository workShiftRepository
+- WebClient webClient
++ Page<WorkShiftsPerPeriodDto> getAllPerWeek(Long,LocalDate,int,int)
++ Page<WorkShiftsSumPerPeriodDto> getSumPerPeriod(Long,LocalDate,LocalDate,int,int)
++ List<WorkShiftsSumPerPeriodDto> getSumPerPeriodWithLimit(Long,LocalDate,LocalDate,int)
++ List<WorkTimePerWeekDto> getForecast(Long,int)
+}
+
+
+interface com.example.shift_control_enterprise.repository.EmployeeRepository {
+~ List<Employee> findAllByEnterpriseId(Long)
+~ Page<Employee> findAllByEnterpriseId(Long,Pageable)
+~ boolean existsByIdAndEnterpriseId(Long,Long)
+}
+
+class com.example.shift_control_enterprise.entity.WorkShift {
+- Long id
+- LocalDate eventDate
+- LocalTime startTime
+- LocalTime endTime
+- Employee employee
+}
+
+class com.example.shift_control_enterprise.ShiftControlEnterpriseApplication {
++ {static} void main(String[])
+}
+
+class com.example.shift_control_enterprise.dto.EmployeeDto {
+- String firstName
+- String lastName
+- String secondName
+- LocalDate dateOfBirth
+- Gender gender
+}
+
+class com.example.shift_control_enterprise.controller.OwnershipController {
+- OwnershipService ownershipService
++ ResponseEntity<OwnershipDto> check(Long)
+}
+
+
+interface com.example.shift_control_enterprise.repository.WorkShiftRepository {
+~ Optional<WorkShift> findByEmployeeIdAndEventDate(Long,LocalDate)
+~ List<WorkShift> findAllByEmployeesAndPeriod(List<Long>,LocalDate,LocalDate)
+~ List<WorkTimePerWeekInSeconds> getWorkTimePerWeeks(Long,LocalDate)
+~ boolean existsByIdAndEmployeeId(Long,Long)
+~ boolean existsByEmployeeIdAndEventDate(Long,LocalDate)
+}
+
+class com.example.shift_control_enterprise.controller.ExternalApiController {
+- StatisticService statisticService
+- AuthUtils authUtils
+- {static} Logger logger
++ ResponseEntity<Page<WorkShiftsPerPeriodDto>> getPerWeek(LocalDate,int,int)
++ ResponseEntity<Page<WorkShiftsSumPerPeriodDto>> getPerPeriod(LocalDate,LocalDate,int,int)
+}
+
+
+class com.example.shift_control_enterprise.handler.EnterpriseHandler {
+- {static} Logger logger
++ ResponseEntity<Map<String,String>> handleInvalidFormatException(InvalidFormatException)
++ ResponseEntity<Map<String,String>> handleNotValidException(MethodArgumentNotValidException,WebRequest)
++ ResponseEntity<Map<String,Object>> handleUserException(UserException)
++ ResponseEntity<Map<String,Object>> handleNoSuchElementException(NoSuchElementException)
++ ResponseEntity<Map<String,Object>> handleDataIntegrityViolation(DataIntegrityViolationException)
++ ResponseEntity<Map<String,Object>> handleEnterpriseException(EnterpriseException)
+}
+
+
+class com.example.shift_control_enterprise.entity.Employee {
+- Long id
+- String firstName
+- String lastName
+- String secondName
+- LocalDate dateOfBirth
+- Gender gender
+- Enterprise enterprise
+}
+
+interface com.example.shift_control_enterprise.mapper.EmployeeMapper {
+~ Employee dtoToEmployee(EmployeeDto)
+~ WorkShiftsPerPeriodDto employeeToWorkShiftsPerWeekDto(Employee)
+~ WorkShiftsSumPerPeriodDto employeeToWorkShiftsSumPerPeriodDto(Employee)
+}
+
+class com.example.shift_control_enterprise.controller.EnterpriseController {
+- EnterpriseService enterpriseService
+- {static} Logger logger
++ ResponseEntity<Enterprise> create(EnterpriseDto)
++ ResponseEntity<Enterprise> getById(Long)
++ ResponseEntity<List<Enterprise>> getAll()
++ ResponseEntity<Enterprise> update(Long,EnterpriseDto)
++ ResponseEntity<Void> delete(Long)
+}
+
+
+class com.example.shift_control_enterprise.controller.FileController {
+- FileService fileService
++ ResponseEntity<byte[]> downloadJson(Long,LocalDate,LocalDate)
++ ResponseEntity<byte[]> downloadXlsx(Long,LocalDate,LocalDate)
+}
+
+
+interface com.example.shift_control_enterprise.repository.EnterpriseRepository {
+~ boolean existsByIdAndOwnerId(Long,UUID)
+}
+
+class com.example.shift_control_enterprise.dto.WorkShiftsSumPerPeriodDto {
+- Long id
+- String firstName
+- String lastName
+- String secondName
+- BigDecimal sumHours
+}
+
+class com.example.shift_control_enterprise.entity.Enterprise {
+- Long id
+- String name
+- String description
+- UUID ownerId
+}
+
+class com.example.shift_control_enterprise.service.EmployeeService {
+- EmployeeRepository employeeRepository
+- EnterpriseRepository enterpriseRepository
+- EmployeeMapper employeeMapper
++ Employee create(EmployeeDto,Long)
++ Employee getById(Long,Long)
++ Page<Employee> getAll(Long,int,int)
++ Employee update(Long,Long,EmployeeDto)
++ void delete(Long,Long)
+}
+
+
+class com.example.shift_control_enterprise.controller.EmployeeController {
+- EmployeeService employeeService
+- {static} Logger logger
++ ResponseEntity<Employee> create(Long,EmployeeDto)
++ ResponseEntity<Employee> getById(Long,Long)
++ ResponseEntity<Page<Employee>> getAll(Long,int,int)
++ ResponseEntity<Employee> update(Long,Long,EmployeeDto)
++ ResponseEntity<Void> delete(Long,Long)
+}
+
+
+class com.example.shift_control_enterprise.service.FileService {
+- EmployeeRepository employeeRepository
+- ObjectMapper objectMapper
+- EmployeeMapper employeeMapper
+- HourOperationService hourOperationService
++ byte[] makeJsonData(Long,LocalDate,LocalDate)
++ byte[] makeXlsxData(Long,LocalDate,LocalDate)
+}
+
+
+interface com.example.shift_control_enterprise.mapper.EnterpriseMapper {
+~ Enterprise dtoToEnterprise(EnterpriseDto)
+}
+
+class com.example.shift_control_enterprise.dto.WorkTimePerWeekDto {
+- int year
+- int week
+- BigDecimal sumHours
+- String type
+}
+
+enum com.example.shift_control_enterprise.type.Gender {
++  FEMALE
++  MALE
+}
+
+class com.example.shift_control_enterprise.permission.EnterprisePermission {
+- EnterpriseRepository enterpriseRepository
+- EmployeeRepository employeeRepository
+- WorkShiftRepository workShiftRepository
+- AuthUtils authUtils
++ boolean hasAccessToEnterprise(Long)
++ boolean hasAccessToEmployee(Long,Long)
++ boolean hasAccessToTimePoint(Long)
++ boolean hasAccessToWorkShift(Long,Long,Long)
+}
+
+
+class com.example.shift_control_enterprise.controller.TimePointController {
+- TimePointService timePointService
+- {static} Logger logger
++ ResponseEntity<Void> create(TimePointDto)
+}
+
+
+class com.example.shift_control_enterprise.dto.WorkShiftsPerPeriodDto {
+- Long id
+- String firstName
+- String lastName
+- String secondName
+- List<WorkShiftHoursDto> workShifts
+- BigDecimal sumHours
+}
+
+class com.example.shift_control_enterprise.dto.WorkShiftHoursDto {
+- LocalDate eventDate
+- BigDecimal hoursWorked
+- Long id
+- Long employeeId
+- LocalTime startTime
+- LocalTime endTime
+- boolean isFinished
+}
+
+class com.example.shift_control_enterprise.service.ForecastDto {
+- List<WorkTimePerWeekDto> storedData
+- List<WorkTimePerWeekDto> predictedData
+}
+
+class com.example.shift_control_enterprise.exception.EnterpriseException {
+}
+class com.example.shift_control_enterprise.dto.TimePointDto {
+- Long employeeId
+}
+
+class com.example.shift_control_enterprise.service.OwnershipService {
+- EnterpriseRepository enterpriseRepository
+- AuthUtils authUtils
++ OwnershipDto check(Long)
+}
+
+
+class com.example.shift_control_enterprise.controller.StatisticController {
+- StatisticService statisticService
+- {static} Logger logger
++ ResponseEntity<Page<WorkShiftsPerPeriodDto>> getPerWeek(Long,LocalDate,int,int)
++ ResponseEntity<Page<WorkShiftsSumPerPeriodDto>> getPerPeriod(Long,LocalDate,LocalDate,int,int)
++ ResponseEntity<List<WorkShiftsSumPerPeriodDto>> getPerPeriodWithLimit(Long,LocalDate,LocalDate,int)
++ ResponseEntity<List<WorkTimePerWeekDto>> getForecast(Long,int)
+}
+
+
+class com.example.shift_control_enterprise.dto.EnterpriseDto {
+- String name
+- String description
+}
+
+class com.example.shift_control_enterprise.security.AuthUtils {
++ UUID getCurrentUserId()
++ Long getEnterpriseId()
+}
+
+interface com.example.shift_control_enterprise.mapper.WorkShiftMapper {
+~ WorkShift dtoToWorkShift(WorkShiftDto)
+~ WorkShiftHoursDto workShiftToWorkShiftHoursDto(WorkShift)
+}
+
+class com.example.shift_control_enterprise.service.WorkShiftService {
+- WorkShiftRepository workShiftRepository
+- EmployeeRepository employeeRepository
+- WorkShiftMapper workShiftMapper
++ WorkShift create(Long,Long,WorkShiftDto)
++ WorkShift update(Long,Long,Long,WorkShiftDto)
++ void delete(Long,Long,Long)
+}
+
+
+interface com.example.shift_control_enterprise.dto.WorkTimePerWeekInSeconds {
+~ int getYear()
+~ int getWeek()
+~ Double getTotalSeconds()
+}
+
+class com.example.shift_control_enterprise.exception.UserException {
+}
+class com.example.shift_control_enterprise.service.EnterpriseService {
+- EnterpriseRepository enterpriseRepository
+- EnterpriseMapper enterpriseMapper
+- AuthUtils authUtils
++ Enterprise create(EnterpriseDto)
++ Enterprise getById(Long)
++ List<Enterprise> getAll()
++ Enterprise update(Long,EnterpriseDto)
++ void delete(Long)
+}
+
+
+class com.example.shift_control_enterprise.dto.OwnershipDto {
+- boolean isOwner
+}
+
+class com.example.shift_control_enterprise.dto.WorkShiftDto {
+- LocalDate eventDate
+- LocalTime startTime
+- LocalTime endTime
+}
+
+class com.example.shift_control_enterprise.controller.WorkShiftController {
+- WorkShiftService workShiftService
+- {static} Logger logger
++ ResponseEntity<WorkShift> create(Long,Long,WorkShiftDto)
++ ResponseEntity<WorkShift> update(Long,Long,Long,WorkShiftDto)
++ ResponseEntity<Void> delete(Long,Long,Long)
+}
+
+
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.shift_control_enterprise.repository.EmployeeRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.shift_control_enterprise.repository.WorkShiftRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.shift_control_enterprise.repository.EnterpriseRepository
+com.example.shift_control_enterprise.exception.RuntimeException <|-- com.example.shift_control_enterprise.exception.EnterpriseException
+com.example.shift_control_enterprise.exception.RuntimeException <|-- com.example.shift_control_enterprise.exception.UserException
+@enduml
