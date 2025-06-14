@@ -1,6 +1,5 @@
-package com.example.shift_control_enterprise.service;
+package com.example.shift_control_enterprise.dto;
 
-import com.example.shift_control_enterprise.dto.WorkTimePerWeekDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
